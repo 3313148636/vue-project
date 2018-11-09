@@ -2,7 +2,7 @@
     <div class="cinema-nav">
         <section class="topbar">
             <div class="topbar-left">
-                <span class="place">北京 <i class="fa fa-sort-down"></i></span>
+                <router-link tag='span' to='/position' class="place">北京 <i class="fa fa-sort-down"></i></router-link>
             </div>
             <div class="topbar-right">
                 <i class="fa fa-search"></i> <span class="search">搜影院</span>

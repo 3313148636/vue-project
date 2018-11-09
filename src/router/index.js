@@ -10,6 +10,7 @@ import Cinema from '@component/cinema/cinema';
 import MovieDetail from '@component/detail/movie-detail';
 import AppMain from '@component/home/main';
 import Login from '@component/mine/login';
+import Position from '@component/position';
 
 
 const routes = [
@@ -49,6 +50,11 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login
+    },
+    {
+        path: '/position',
+        name: 'position',
+        component: Position
     }
     // {
     //     path: '/not-found',

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <app-header :header='title'></app-header>
+    <app-header :header='title' v-if='this.$route.path !== "/position"'></app-header>
     <router-view :headertitle.sync='title'></router-view>
   </div>
 </template>
@@ -17,13 +17,11 @@ export default {
           header_title: '猫眼'
       }
     },
-    watch:{
-        title:(val)=>{
-          
-        }
-    },
     components: {
       AppHeader
+    },
+    mounted(){
+      
     }
 }
 

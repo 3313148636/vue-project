@@ -2,7 +2,7 @@
 <template>
     <nav class="app-nav">      
         <div class="vw app-nav-left">
-            <span>北京</span>
+            <router-link tag='span' to='/position'>北京</router-link>
             <i class='fa fa-sort-down'></i>
         </div>
         <div class="vw app-nav-center">
