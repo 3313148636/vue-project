@@ -22,7 +22,8 @@
                 <div class="incentive-container" v-if='item.promotion.cardPromotionTag'>
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAABNChwpAAAAAXNSR0IArs4c6QAAAgFJREFUSA3Nlz1LA0EQhmf3kouFEQwi+FEYQ+xEsImFoCDoL/CLaKd/QbC0sbCzFVuxsRS1jEVAsUqrIILRQAhaBGKMuawzwpGAm83mNhddCHfZnd3n3Z2ZuxsG2JI3YtQpVw6AiTkhYJj6/GqMwSsIdm312DsnMyzLCF79rGRAiIhfUOm6jL0FQvZU4Gfn0GU4KcINE5vjsc9LFXajE9kcfT7UDZaMQWwuG9Dpi/YyiIWZjqnSxrOAtWgANsYDysV1Bj0L0Flcx8ZoC1F0wf50UMo5fqjCY1FIxxo7jQSUHWgK+ag2YprfGwnIlQTQTk3a/46B2UEOIUu+v0gIIMgZLLTIZHJTOl+TL4K9ShckMc36Q+pc356QB6FLLJQFCqi4f39d2WoKLTy03ckg2OjAvcyXh9n1KX8eA0YC4n0MtuLoJru+o3bvjAS8o2vpfXCYsGEzZkFYHQ5SbcoglM5o6KQAoxhIDHBYiVqYERZcZB04f3aghNGv04wEuIDbQg3u8Lc4YsHymAVLeD17cuDypbWKjgggIZTpVwhM5x1YxzdlpaaXXB0T4J5GEbPy6F7/8WwUhC7U5OpZgIPfU5qnrNTn+UmoXLWNQc8n0AZDacqxUskpLXwcJDbHMinlI0O9NLI51WiAZZLa0odRZBKbU4FINRoDdtoNdxCDWMQk9jePWpE8hVOLbwAAAABJRU5ErkJggg==" alt="">
                     <p class="incentive">{{item.promotion.cardPromotionTag}}</p>
-                </div>  
+                </div> 
+                <p class="showTimes" v-if='$route.name == "detail"'>近期场次：{{item.showTimes}}</p>
             </li>
         </ul>
     </div>
@@ -38,8 +39,13 @@
                 offset: 0
             }
         },
+        props:['movieid'],
         created(){
-            this.getdata();    
+            if(this.$route.name == 'cinema'){
+                this.getdata();    
+            }else if(this.$route.name == 'detail'){
+                this.getdataildata();
+            }
         },
         methods: {
             async getdata(){
@@ -57,13 +63,37 @@
                 })
                 this.result_data = this.result_data.concat(result.cinemas);
                 this.offset += 20; 
-            }
+            },
+            async getdataildata(){
+                let result = await this.$http({
+                    url: '/my/ajax/movie',
+                    method: 'post',
+                    params: { 
+                        forceUpdate: Date.now()
+                    },
+                    data: {
+                        movieId: this.movieid,
+                        day: '2018-11-11', offset: this.offset,
+                        limit: 20, districtId: -1,
+                        lineId: -1, hallType: -1, 
+                        brandId: -1, serviceId: -1,
+                        areaId: -1, stationId: -1,
+                        item: '', updateShowDay: true,
+                        reqId: Date.now(), cityId: 197
+                    }
+                })
+                this.result_data = this.result_data.concat(result.cinemas);
+                this.offset += 20; 
+                return result.cinemas;
+            },
         },
         mounted() {
-            this.scroll = scroll({
-                el: this.$refs.wrapper,
-                handler: this.getdata.bind(this),
-            })
+            if(this.$route.name == 'cinema'){
+                this.scroll = scroll({
+                    el: this.$refs.wrapper,
+                    handler: this.getdata.bind(this),
+                })
+            }
         },
         filters: {
             imgHandle: (val) => {
@@ -80,7 +110,7 @@
         .cinema-main{
             padding:0 .4rem;
             .cinema-main-li{
-                padding: .373333rem 0;
+                padding: .346667rem 0;
                 position: relative;
                 border-bottom: 1px solid #eee;
                 .title-con{
@@ -173,6 +203,15 @@
                         white-space: nowrap;
                         width: auto;
                     }
+                }
+                .showTimes{
+                    color: #999;
+                    font-size: .293333rem;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    width: auto;
+                    margin-top: .106667rem;
                 }
             }
         }

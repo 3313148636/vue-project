@@ -2,7 +2,7 @@
 <template>
     <main class="main" ref="wrapper">
         <ul class="main-ul">
-            <li class="main-li" v-for='item in movieList' :key='item.id'>
+            <router-link tag='li' :to="{name: 'detail', params: {nm: item.nm, id: item.id}}" class="main-li" v-for='item in movieList' :key='item.id'>
                 <div class="left">
                     <img :src="item.img | imgHandle" alt="">
                 </div>
@@ -33,7 +33,7 @@
                         <!-- 1234 -->
                     </div>
                 </div>
-            </li>
+            </router-link>
         </ul>
     </main>
 </template>

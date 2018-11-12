@@ -2,7 +2,8 @@
 <template>
     <header class="app-header">
         <div class="header">
-            <span class="nav-header-span" v-if='isShow' @click="goback"><i class='fa fa-arrow-left'></i></span>
+            <span class="nav-header-span" v-if='this.$route.path == "/login"' @click="goback"><i class='fa fa-arrow-left'></i></span>
+            <span class="nav-header-span" v-if='this.$route.path == "/detail"' @click="goback"><i class='fa fa-angle-left'></i></span>
             <h1 class="nav-header">{{header}}</h1>
         </div>      
     </header>
@@ -11,24 +12,18 @@
 export default {
     data(){
         return{
-            isShow: false
+            position: 're'
         }
     },
     props:['header'],
     watch: {
-        header: function(val){
-            if(this.$route.path == '/login'){
-                this.isShow = true;
-            }else{
-                this.isShow = false;
-            }
-        }
+        
     },
     created(){
-        if(this.$route.path == '/login'){
-            this.isShow = true;
+        if(this.$route.path == '/detail'){
+            this.position = true;
         }else{
-            this.isShow = false;
+            this.position = false;
         }
     },
     methods: {
@@ -41,7 +36,7 @@ export default {
 
 <style lang="scss">
     .app-header{
-        position: fixed;
+        position: absolute;
         z-index: 10;
         width: 100%;
         top: 0;
@@ -53,14 +48,19 @@ export default {
             position: relative;
             border-bottom: 1px solid #e54847;
             box-sizing:border-box;
-            display: flex;
             .nav-header-span{
+                position: absolute;
                 width: 1.36rem;
+                height: 1.373333rem;
+                text-align: center;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 .fa-arrow-left{
-                    font-size: 30px;
+                    font-size: .8rem;
+                }
+                .fa-angle-left{
+                    font-size: 1.066667rem;
                 }
             }
             .nav-header{
