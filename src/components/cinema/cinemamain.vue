@@ -1,6 +1,6 @@
 <template>
     <div class="cinema-main-container" ref='wrapper'>
-        <ul class="cinema-main">
+        <ul class="cinema-main" v-if='!listnone'>
             <li class="cinema-main-li" v-for="item in result_data" :key='item.id'>
                 <p class="title-con">
                     <span class="title">{{item.nm}}</span>
@@ -26,20 +26,34 @@
                 <p class="showTimes" v-if='$route.name == "detail"'>近期场次：{{item.showTimes}}</p>
             </li>
         </ul>
+        <div class="listnone" v-if='listnone'>
+            <img src="http://p0.meituan.net/movie/8b521599145a30fe521be9f2d60392d845310.png">
+            <div class="no-cinema-tip">暂无符合条件的影院</div>
+        </div>
     </div>
 </template>
 
 <script>
     import scroll from '@util/scroll'
+    import { SAVE_INFOR } from '@/store/position/mutation-type'
+    import { mapState } from 'vuex';
 
     export default {
         data(){
             return{
                 result_data : [],
-                offset: 0
+                info : {
+                    districtId: -1, 
+                    areaId: -1, 
+                    lineId: -1, 
+                    stationId: -1,
+                    offset:0
+                },
+                listnone: false
             }
         },
         props:['movieid'],
+        computed: mapState(['position']),
         created(){
             if(this.$route.name == 'cinema'){
                 this.getdata();    
@@ -47,22 +61,46 @@
                 this.getdataildata();
             }
         },
+        watch: {
+            ['position.info'](val){
+                let {info, allinfo} = this.position;
+                let districtId = -1, areaId = -1, lineId = -1, stationId = -1;
+                if( allinfo.district ){
+                   var obj1 = this.getInfor(info.val1,info.val2,allinfo.district.subItems);
+                   var obj2 = this.getInfor(info.val3,info.val4,allinfo.subway.subItems);
+                   districtId = obj1.x1;
+                   areaId = obj1.x2;
+                   lineId = obj2.x1;
+                   stationId = obj2.x2
+                }
+                this.info = {
+                    districtId, areaId, lineId, stationId, offset:0
+                }
+                this.result_data = [];
+                this.getdata();
+            }
+        },
         methods: {
             async getdata(){
                 let result = await this.$http({
                     url: '/my/ajax/cinemaList',
                     params: { 
-                        day: '2018-11-08', offset: this.offset,
-                        limit: 20, districtId: -1,
-                        lineId: -1, hallType: -1, 
+                        day: '2018-11-08', offset: this.info.offset,
+                        limit: 20, districtId: this.info.districtId,
+                        lineId: this.info.lineId, hallType: -1, 
                         brandId: -1, serviceId: -1,
-                        areaId: -1, stationId: -1,
+                        areaId: this.info.x2, stationId: this.info.stationId,
                         item: '', updateShowDay: true,
-                        reqId: '1541682240450', cityId: 1
+                        reqId: '1541682240450', cityId: this.$store.state.position.city.cityId
                     }
                 })
+                if(this.info.offset === 0 && result.cinemas.length == 0){
+                    this.listnone = true;
+                }else{
+                    this.listnone = false;
+                }
                 this.result_data = this.result_data.concat(result.cinemas);
-                this.offset += 20; 
+                this.info.offset += 20; 
             },
             async getdataildata(){
                 let result = await this.$http({
@@ -86,6 +124,23 @@
                 this.offset += 20; 
                 return result.cinemas;
             },
+            getInfor(val1, val2, arr){
+                var x1 = -1;
+                var x2 = -1;
+                for(var i=0; i< arr.length; i++){
+                    if(arr[i].name === val1){
+                        x1 = arr[i].id;
+                        for(var j=0; j<arr[i].subItems.length; j++){
+                            if(val2 === arr[i].subItems[j].name){
+                                x2 = arr[i].subItems[j].id;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                return {x1, x2}
+            }
         },
         mounted() {
             if(this.$route.name == 'cinema'){
@@ -213,6 +268,23 @@
                     width: auto;
                     margin-top: .106667rem;
                 }
+            }
+        }
+        .listnone{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 2.666667rem;
+            img{
+                width: 1.906667rem;
+                height: 2.176rem;
+            }
+            .no-cinema-tip{
+                font-size: 14px;
+                color: #777;
             }
         }
     }

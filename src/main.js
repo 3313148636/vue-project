@@ -12,10 +12,14 @@ import '@libs'
 // router 路由
 import router from './router'
 
+//引入store
+import store from './store'
+
 Vue.config.productionTip = false
 
 // 根实例
 new Vue({
+  store,
   router,
   render: h => h(App)
 }).$mount('#app')

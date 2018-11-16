@@ -2,7 +2,7 @@
 <template>
     <nav class="app-nav">      
         <div class="vw app-nav-left">
-            <router-link tag='span' to='/position'>北京</router-link>
+            <router-link tag='span' to='/position'>{{position.city.cityName}}</router-link>
             <i class='fa fa-sort-down'></i>
         </div>
         <div class="vw app-nav-center">
@@ -18,12 +18,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data(){
         return {
             titile: ['正在热映', '即将上映'],
             router: ['/home/onnow', '/home/onnext'],
         }
+    },
+    computed: mapState(['position']),
+    mounted(){
+        // console.log(this)
     }
 }
 </script>

@@ -1,0 +1,11 @@
+
+
+const CHANGE_CITY = 'CHANGE_CITY'
+const SAVE_INFOR = 'SAVE_INFOR'
+const ALL_INFOR = 'ALL_INFOR'
+
+export {
+    CHANGE_CITY,
+    SAVE_INFOR,
+    ALL_INFOR
+}

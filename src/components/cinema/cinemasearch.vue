@@ -1,13 +1,20 @@
 <template>
     <section class="topbar">
         <div class="topbar-left">
-            <router-link tag='span' to='/position' class="place">北京 <i class="fa fa-sort-down"></i></router-link>
+            <router-link tag='span' to='/position' class="place">{{position.city.cityName}} <i class="fa fa-sort-down"></i></router-link>
         </div>
         <div class="topbar-right">
             <i class="fa fa-search"></i> <span class="search">搜影院</span>
         </div>
     </section>
 </template>
+<script>
+import { mapState } from 'vuex';
+export default {
+    computed: mapState(['position'])
+}
+</script>
+
 <style lang="scss">
     .topbar{
         height: 1.173334rem;
